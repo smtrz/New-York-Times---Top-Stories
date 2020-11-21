@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='TrendingRepositories'
+rootProject.name='Top Stories - NYT'

@@ -1,105 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/btn_layout"
+    <include
+        android:id="@+id/tool_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/act_toolbar" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs_main"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/border"
-        android:gravity="center"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tool_bar"
+        app:tabMode="fixed"
+        tools:ignore="MissingConstraints" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="RETRY"
-
-            android:textColor="@color/btn_back"
-            android:textSize="15sp" />
-    </RelativeLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.task.nytimes.Activities.TrendingActivity">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tabs_main" />
 
-        <include
-            android:id="@+id/tool_bar"
-            layout="@layout/act_toolbar" />
-
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="No data available !"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/error_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:src="@drawable/nointernet_connection"
-
-                ></ImageView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="Something went wrong.. "
-                android:textColor="@color/error_heading1"
-                android:textSize="18sp"></TextView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="An alien is probably blocking your signal."
-                android:textColor="@color/error_heading2"
-                android:textSize="15sp"></TextView>
-
-        </LinearLayout>
-
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/pullToRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_repos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/list_margin"
-                android:scrollbars="vertical">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

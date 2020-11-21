@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.newlist_item.view.*
 
 
 class NewsAdapter(
+    var type: String,
     var context: Context,
     var articles: List<Results>?,
     var completedata: TopStories?,
@@ -33,7 +34,15 @@ class NewsAdapter(
         completedata = newItems
         cv = Cv
         articles = completedata?.results
-        ni.ifListisEmpty(articles!!.size)
+        if (articles == null) {
+
+            ni.ifListisEmpty(0)
+
+        } else {
+            ni.ifListisEmpty(articles!!.size)
+
+
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
@@ -44,10 +53,25 @@ class NewsAdapter(
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         try {
 
-            holder.newsTitle!!.text = articles!![position].title
+
             holder.published_date!!.text = articles!![position].published_date
-            holder.desc!!.text = articles!![position].abstract
             holder.author!!.text = articles!![position].byline
+
+// bookmark fragment is being populated.
+            if (!type.equals("news")) {
+                holder.desc!!.visibility = View.GONE
+                holder.bookmark!!.visibility = View.GONE
+                holder.newsTitle!!.text = articles!![position].title
+                holder.desc!!.text = articles!![position].abstractdata
+
+            } else {
+                // news fragment is being populated
+                holder.desc!!.maxLines = articles!![position].abstractdata!!.length
+                holder.newsTitle!!.text = articles!![position].title
+                holder.desc!!.text = articles!![position].abstractdata
+                holder.bookmark!!.visibility = View.VISIBLE
+
+            }
             if (articles!![position].multimedia!!.size > 0) {
 
                 Picasso.get().load(articles!![position].multimedia!!.get(0).url)
@@ -55,12 +79,18 @@ class NewsAdapter(
 
             }
 
-
+// News Card click event
             holder.cardView!!.setOnClickListener {
                 TransitionManager.beginDelayedTransition(holder.cardView!!)
                 cv.Onclick(position)
 
             }
+
+
+            holder.bookmark!!.setOnClickListener(View.OnClickListener {
+                cv.bookMarkClicked(position)
+
+            })
 
 
         } catch (e: Exception) {
@@ -89,7 +119,7 @@ class NewsAdapter(
         internal var img: ImageView? = itemView.thumbnail
         internal var desc: TextView? = itemView.newsInfo
         internal var author: TextView? = itemView.author
-        internal var bookmark: TextView? = itemView.bookmark
+        internal var bookmark: ImageView? = itemView.bookmark
         internal var cardView: CardView? = itemView.card_view
 
     }

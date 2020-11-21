@@ -5,28 +5,17 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.task.nytimes.Models.BaseTrending
-import com.task.nytimes.Models.TopStories
+import com.task.nytimes.Models.Results
 
 @Dao
 interface TrendingRepoDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertItem(items: List<BaseTrending>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertnews(items: Results): Long
 
 
-    @Query("SELECT * from trendingrepos")
-    fun getallItems(): LiveData<List<BaseTrending>>
+    @Query("SELECT * from newsresult ORDER BY id DESC")
+    fun getallbookmarks(): LiveData<List<Results>>
 
 
-
-    @Query("DELETE FROM trendingrepos")
-    fun delete()
-
-    @Query("SELECT * from trendingrepos ORDER BY stars DESC")
-    fun sortbyStars(): List<BaseTrending>
-
-
-    @Query("SELECT * from trendingrepos ORDER BY name")
-    fun sortbyName(): List<BaseTrending>
 }

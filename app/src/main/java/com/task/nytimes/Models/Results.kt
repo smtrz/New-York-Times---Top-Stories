@@ -2,23 +2,47 @@ package com.task.nytimes.Models
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.*
+import com.google.gson.annotations.SerializedName
+import com.task.nytimes.Database.Converters
+import com.task.nytimes.Database.MultimediaConverter
+
+@Entity(
+    tableName = "newsresult",
+    indices = [Index(value = ["title", "abstractdata"], unique = true)]
+)
+
 class Results() : Parcelable {
 
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Int = 0
 
-     var per_facet: List<String>? = null
+    @ColumnInfo(name = "abstractdata")
+    @SerializedName("abstract")
+    var abstractdata: String? = null
+
+    @TypeConverters(Converters::class)
+    var per_facet: List<String>? = null
     var subsection: String? = null
     var item_type: String? = null
-     var org_facet: List<String>? = null
+    var org_facet: List<String>? = null
     var section: String? = null
-    var abstract: String? = null
+
     var title: String? = null
-     var des_facet: List<String>? = null
+
+    @TypeConverters(Converters::class)
+    var des_facet: List<String>? = null
     var uri: String? = null
     var url: String? = null
     var short_url: String? = null
     var material_type_facet: String? = null
-     var multimedia: ArrayList<Multimedia>? = null
-     var geo_facet:List<String>? = null
+
+    @TypeConverters(MultimediaConverter::class)
+    var multimedia: ArrayList<Multimedia>? = null
+
+    @TypeConverters(Converters::class)
+    var geo_facet: List<String>? = null
     var updated_date: String? = null
     var created_date: String? = null
     var byline: String? = null
@@ -31,7 +55,7 @@ class Results() : Parcelable {
         item_type = parcel.readString()
         org_facet = parcel.createStringArrayList()
         section = parcel.readString()
-        abstract = parcel.readString()
+        abstractdata = parcel.readString()
         title = parcel.readString()
         des_facet = parcel.createStringArrayList()
         uri = parcel.readString()
@@ -56,7 +80,7 @@ class Results() : Parcelable {
         parcel.writeString(item_type)
         parcel.writeStringList(org_facet)
         parcel.writeString(section)
-        parcel.writeString(abstract)
+        parcel.writeString(abstractdata)
         parcel.writeString(title)
         parcel.writeStringList(des_facet)
         parcel.writeString(uri)

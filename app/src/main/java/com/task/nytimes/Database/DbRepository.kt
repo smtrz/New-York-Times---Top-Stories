@@ -3,14 +3,16 @@ package com.task.nytimes.Database
 
 import android.content.Context
 import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.task.nytimes.Configurations.App
 import com.task.nytimes.Helpers.DateHelper
-import com.task.nytimes.Helpers.Sp_Get_Store_Data
+import com.task.nytimes.Helpers.UIHelper
 import com.task.nytimes.Interfaces.EndpointsInterface
-import com.task.nytimes.Models.BaseTrending
+import com.task.nytimes.Models.Results
 import com.task.nytimes.Models.TopStories
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,21 +21,27 @@ import retrofit2.Retrofit
 import java.util.*
 import javax.inject.Inject
 
+
 class DbRepository {
     lateinit var trendingDao: TrendingRepoDao
+
     @Inject
     lateinit var retrofit: Retrofit
     internal var dataLoading = MutableLiveData<Boolean>()
-    internal var topStories  = MutableLiveData<TopStories>()
+    internal var topStories = MutableLiveData<TopStories>()
 
     @Inject
     lateinit var c: Context
+
     @Inject
     lateinit var db: AppDB
+
     @Inject
     lateinit var now: Date
+
     @Inject
     lateinit var dh: DateHelper
+
     internal constructor() {
         // empty constructor
 
@@ -46,101 +54,87 @@ class DbRepository {
     }
 
 
-
-    fun getNewData() :MutableLiveData<TopStories> {
+    fun getNewData(): MutableLiveData<TopStories> {
         return topStories
 
     }
 
-
+    // checking if the data has been loaded successfully.
     fun ifDataIsloading(): MutableLiveData<Boolean> {
         return dataLoading
 
     }
-    fun get_sorted_list_star(): List<BaseTrending> {
 
-        return getallArticles_sortedbystars(trendingDao).execute().get()
 
-    }
-
-    fun get_sorted_list_name(): List<BaseTrending> {
-
-        return getallArticles_sortedbyName(trendingDao).execute().get()
-
-    }
-
-    fun deleteAllitems() {
-        deleteAsync(trendingDao).execute()
-
-    }
-
-    fun insertItems(sms: List<BaseTrending>?) {
-        insertAsyncTask(trendingDao).execute(sms)
-    }
-
-    private inner class getallArticles_sortedbystars internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
-        AsyncTask<Void, Void, List<BaseTrending>>() {
-        override fun doInBackground(vararg url: Void): List<BaseTrending> {
-            return mAsyncTaskDao.sortbyStars()
-            //return null
-        }
+    // add new bookmark news insertion API
+    fun insertnewNews(sms: Results) {
+        insertNewsAsync(trendingDao).execute(sms)
     }
 
 
-    private inner class getallArticles_sortedbyName internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
-        AsyncTask<Void, Void, List<BaseTrending>>() {
-        override fun doInBackground(vararg url: Void): List<BaseTrending> {
-            return mAsyncTaskDao.sortbyName()
-        }
-    }
-
-    private class insertAsyncTask internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
-        AsyncTask<List<BaseTrending>, Void, Void>() {
-
-        override fun doInBackground(vararg params: List<BaseTrending>): Void? {
-            mAsyncTaskDao.insertItem(params[0])
-            return null
-        }
-    }
-
-    private class deleteAsync internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
-        AsyncTask<Void, Void, Void>() {
-
-        override fun doInBackground(vararg params: Void): Void? {
-            mAsyncTaskDao.delete()
-            return null
-        }
+    // get the bookmark news
+    fun getbookMarkNews(): LiveData<List<Results>> {
+        return getallbookmarkedNews(trendingDao).execute().get()
     }
 
 
-// get news data /////////
-fun getNewsData() {
+    inner class insertNewsAsync internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
+        AsyncTask<Results, Void, Void>() {
 
-
-    dataLoading.value = true
-    //  pd.show();
-    val endpoints = retrofit!!.create(EndpointsInterface::class.java)
-    endpoints.getNewsListData("ZNxvQVUF3mr4VgB2VbJcy5zztaXIqbch").enqueue(object : Callback<TopStories> {
-        override fun onResponse(
-            call: Call<TopStories>,
-            response: Response<TopStories>
-        ) {
-            dataLoading.value = false
-
-            if (response.isSuccessful) {
-                topStories.value=response.body()
+        override fun doInBackground(vararg params: Results): Void? {
+            val row = mAsyncTaskDao.insertnews(params[0])
+            Log.d("ROWCHECK", row.toString())
+            if (row > 0) {
+                Handler(Looper.getMainLooper()).post {
+                    UIHelper.showLongToastInCenter(c, "Bookmarked")
+                }
             } else {
-                topStories.value=null
+                Handler(Looper.getMainLooper()).post {
+                    UIHelper.showLongToastInCenter(c, "Already Bookmarked the Story")
+
+                }
             }
+            return null
         }
+    }
 
-        override fun onFailure(call: Call<TopStories>, t: Throwable) {
-
-            dataLoading.value = false
-
+    private inner class getallbookmarkedNews internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
+        AsyncTask<Void, Void, LiveData<List<Results>>>() {
+        override fun doInBackground(vararg url: Void): LiveData<List<Results>> {
+            return mAsyncTaskDao.getallbookmarks()
         }
-    })
-}
+    }
+
+    // get news data /////////
+    fun getNewsData() {
+
+
+        dataLoading.value = true
+        //  pd.show();
+        val endpoints = retrofit!!.create(EndpointsInterface::class.java)
+        endpoints.getNewsListData("ZNxvQVUF3mr4VgB2VbJcy5zztaXIqbch")
+            .enqueue(object : Callback<TopStories> {
+                override fun onResponse(
+                    call: Call<TopStories>,
+                    response: Response<TopStories>
+                ) {
+                    dataLoading.value = false
+
+                    if (response.isSuccessful) {
+                        topStories.value = response.body()
+                    } else {
+                        topStories.value = null
+                    }
+                }
+
+                override fun onFailure(call: Call<TopStories>, t: Throwable) {
+                    // topStories = MutableLiveData<TopStories>()
+                    topStories.value = TopStories()
+                    dataLoading.value = false
+
+                }
+            })
+    }
 
 
     fun shouldFetchData() {

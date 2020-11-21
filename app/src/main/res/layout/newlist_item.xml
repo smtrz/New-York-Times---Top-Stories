@@ -93,10 +93,10 @@
                 android:text="Author"
                 android:visibility="gone" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/bookmark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_below="@+id/newsInfo"
                 android:layout_alignRight="@id/published"
                 android:layout_marginBottom="@dimen/_8dp"
@@ -104,8 +104,8 @@
                 android:gravity="center_vertical|right"
                 android:padding="@dimen/_8dp"
                 android:layout_marginRight="5dp"
-                android:text="bookmark"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:src="@drawable/bookmark"/>
 
         </RelativeLayout>
 

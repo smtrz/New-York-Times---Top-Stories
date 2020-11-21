@@ -42,10 +42,29 @@
             android:id="@+id/more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:src="@drawable/more_black" />
+            android:src="@drawable/more_black"
+            android:visibility="gone" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/back"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
 
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+
+        >
+
+        <ImageView
+            android:id="@+id/backbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/design_default_color_on_secondary"
+            android:src="@drawable/arrow_back_white_24dp"
+            android:visibility="visible" />
+    </RelativeLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +76,7 @@
         android:text="@string/heading_main"
         android:textColor="@color/heading_color"
         android:textSize="21sp"
-
+        android:id="@+id/tvtitle"
         ></TextView>
 
 </RelativeLayout>
