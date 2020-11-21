@@ -14,6 +14,10 @@ Top Stories - NYT is an android application written in 'KOTLIN' that lists down 
   - Easily extendible
   - Clean UI and code
 
+# Screenshots
+
+<img src="https://github.com/smtrz/New-York-Times---Top-Stories/blob/master/screen_1.png" alt="drawing" width="350"/>  |  <img src="https://github.com/smtrz/New-York-Times---Top-Stories/blob/master/screen_2.png" alt="drawing" width="350"/>
+
 
 ### Tech
 
