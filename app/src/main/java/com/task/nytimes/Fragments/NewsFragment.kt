@@ -61,7 +61,7 @@ class NewsFragment() : Fragment(), NewsListInterface, CardViewClick,
         // initialzning the fragment
         init()
         // setting up viewmodel
-        newsViewModel.getResult().observe(this,
+        newsViewModel.getResult().observe(activity!!,
             Observer<TopStories> { articles ->
                 Log.d("##", "inside get result...")
                 list = articles
@@ -70,7 +70,7 @@ class NewsFragment() : Fragment(), NewsListInterface, CardViewClick,
             })
 
         // listening to ifdataloading live data to make sure if the data is loaded and we can dismiss the dialog.
-        newsViewModel.ifDataIsloading().observe(this,
+        newsViewModel.ifDataIsloading().observe(activity!!,
             Observer { aBoolean ->
                 if (aBoolean!!) {
 

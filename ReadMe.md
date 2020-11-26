@@ -13,10 +13,11 @@ Top Stories - NYT is an android application written in 'KOTLIN' that lists down 
   - orientation independent
   - Easily extendible
   - Clean UI and code
+  - Ready Unit Test
 
 # Screenshots
 
-<img src="https://github.com/smtrz/New-York-Times---Top-Stories/blob/master/screen_1.png" alt="drawing" width="350"/>  |  <img src="https://github.com/smtrz/New-York-Times---Top-Stories/blob/master/screen_2.png" alt="drawing" width="350"/>
+<img src="https://github.com/smtrz/New-York-Times---Top-Stories/blob/master/screen_1.png" alt="drawing" width="350"/>    <img src="https://github.com/smtrz/New-York-Times---Top-Stories/blob/master/screen_2.png" alt="drawing" width="350"/>
 
 
 ### Tech
@@ -27,6 +28,7 @@ This app uses a number of open source projects Libraries and frameworks:
 * [SOLID] - Use of Solid Design principles
 * [Room] -Data Storage using ROOM
 * [Dagger2] - Dependency injection using Dagger2
+* [Coroutines] - Async Calls using coroutines
 * [Repository pattern] - Use of repository pattern for data storage and retrievel
 * [View Model]
 
@@ -37,17 +39,17 @@ The app currently has only one branch(master), Fork and just check out that bran
 
 ### Improvments Needed 
 
-* [Unit tests remaining]
-* [Async calls with co-routines]
+* [Dependency Injection using Hilt]
+* [Code Obfuscation & SSL pinning]
 
 
 License
 ----
 Designed and developed by :
 
-Tahir Raza
-smtrz@yahoo.com
-Skype: smtrz110
-Profile: https://www.linkedin.com/in/tahiraza/
+Tahir Raza<br/>
+smtrz@yahoo.com<br/>
+Skype: smtrz110<br/>
+Profile: https://www.linkedin.com/in/tahiraza/<br/>
 portfolio : http://highbryds.com/tahir-raza
 

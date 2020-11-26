@@ -1,20 +1,22 @@
 package com.task.nytimes.ViewModels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.task.nytimes.Configurations.App
 import com.task.nytimes.Database.DbRepository
 import com.task.nytimes.Models.Results
 import com.task.nytimes.Models.TopStories
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NewsActivityViewModel(application: Application) : AndroidViewModel(application) {
+class NewsActivityViewModel() : ViewModel() {
 
     @Inject
     lateinit var dbrepo: DbRepository
-
+    lateinit var bookmarks: LiveData<List<Results>>
 
     init {
 
@@ -29,7 +31,11 @@ class NewsActivityViewModel(application: Application) : AndroidViewModel(applica
     // just refresh the data based on the result.
 
     fun callNewsAPI() {
-        dbrepo!!.shouldFetchData()
+        viewModelScope.launch {
+            dbrepo!!.shouldFetchData()
+        }
+
+        // }
 
     }
 
@@ -37,15 +43,22 @@ class NewsActivityViewModel(application: Application) : AndroidViewModel(applica
         return dbrepo!!.getNewData()
 
     }
+
     // add new bookmark news insertion API
     fun insertnewNews(sms: Results) {
-        dbrepo.insertnewNews(sms)
+        viewModelScope.launch {
+            dbrepo.insertnewNews(sms)
+        }
     }
 
 
     // get the bookmark news
-    fun getbookMarkNews() : LiveData<List<Results>> {
-        return dbrepo.getbookMarkNews()
+    fun getbookMarkNews(): LiveData<List<Results>> {
+    //    val result = MutableLiveData<List<Results>>()
+        // viewModelScope.launch {
+       return dbrepo.getbookMarkNews()
+        //}
+        //return result
     }
 }
 

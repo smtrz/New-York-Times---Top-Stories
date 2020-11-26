@@ -2,10 +2,6 @@ package com.task.nytimes.Database
 
 
 import android.content.Context
-import android.os.AsyncTask
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.task.nytimes.Configurations.App
@@ -14,6 +10,8 @@ import com.task.nytimes.Helpers.UIHelper
 import com.task.nytimes.Interfaces.EndpointsInterface
 import com.task.nytimes.Models.Results
 import com.task.nytimes.Models.TopStories
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,23 +65,41 @@ class DbRepository {
 
 
     // add new bookmark news insertion API
-    fun insertnewNews(sms: Results) {
-        insertNewsAsync(trendingDao).execute(sms)
+    suspend fun insertnewNews(sms: Results) {
+        // insertNewsAsync(trendingDao).execute(sms)
+        val row = trendingDao.insertnews(sms)
+        coroutineScope {
+            MainScope()
+            if (row > 0) {
+                //  Handler(Looper.getMainLooper()).post {
+                UIHelper.showLongToastInCenter(c, "Bookmarked")
+                //}
+            } else {
+                // Handler(Looper.getMainLooper()).post {
+                UIHelper.showLongToastInCenter(c, "Already Bookmarked the Story")
+
+                //}
+            }
+        }
+
+
     }
 
 
     // get the bookmark news
     fun getbookMarkNews(): LiveData<List<Results>> {
-        return getallbookmarkedNews(trendingDao).execute().get()
+        // return getallbookmarkedNews(trendingDao).execute().get()
+
+        return trendingDao.getallbookmarks()
     }
 
 
-    inner class insertNewsAsync internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
+/*    inner class insertNewsAsync internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
         AsyncTask<Results, Void, Void>() {
 
         override fun doInBackground(vararg params: Results): Void? {
             val row = mAsyncTaskDao.insertnews(params[0])
-            Log.d("ROWCHECK", row.toString())
+            //  Log.d("ROWCHECK", row.toString())
             if (row > 0) {
                 Handler(Looper.getMainLooper()).post {
                     UIHelper.showLongToastInCenter(c, "Bookmarked")
@@ -96,17 +112,17 @@ class DbRepository {
             }
             return null
         }
-    }
+    }*/
 
-    private inner class getallbookmarkedNews internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
-        AsyncTask<Void, Void, LiveData<List<Results>>>() {
-        override fun doInBackground(vararg url: Void): LiveData<List<Results>> {
-            return mAsyncTaskDao.getallbookmarks()
-        }
-    }
-
+    /* private inner class getallbookmarkedNews internal constructor(private val mAsyncTaskDao: TrendingRepoDao) :
+         AsyncTask<Void, Void, LiveData<List<Results>>>() {
+         override fun doInBackground(vararg url: Void): LiveData<List<Results>> {
+             return mAsyncTaskDao.getallbookmarks()
+         }
+     }
+ */
     // get news data /////////
-    fun getNewsData() {
+    suspend fun getNewsData() {
 
 
         dataLoading.value = true
@@ -121,23 +137,23 @@ class DbRepository {
                     dataLoading.value = false
 
                     if (response.isSuccessful) {
-                        topStories.value = response.body()
+                        topStories.postValue(response.body())
                     } else {
-                        topStories.value = null
+                        topStories.postValue(null)
                     }
                 }
 
                 override fun onFailure(call: Call<TopStories>, t: Throwable) {
                     // topStories = MutableLiveData<TopStories>()
-                    topStories.value = TopStories()
-                    dataLoading.value = false
+                    topStories.postValue(TopStories())
+                    dataLoading.postValue(false)
 
                 }
             })
     }
 
 
-    fun shouldFetchData() {
+    suspend fun shouldFetchData() {
         getNewsData();
 
     }
